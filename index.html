@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Life Countdown | Nikhil Notse</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 4rem 20px;
+      background-color: #f4f4f4;
+
+    }
+    h1 {
+      color: #333;
+    }
+    .countdown {
+      font-size: 20px;
+      margin-top: 20px;
+    }
+    .timer {
+      font-size: 36px;
+      color: #ff0000;
+      font-weight: bold;
+    }
+    .details {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Life Countdown (Excluding Sleep)</h1>
+<p>Based on an average lifespan of 65 years and 8 hours of sleep per day.</p>
+
+<div class="countdown">
+  <p>You have approximately <span id="days-left">0</span> days left to live.</p>
+  <p>Awake time left: <span id="awake-days">0</span> days (excluding sleep).</p>
+  <p class="timer">Time Remaining Today: <span id="time-left">00:00:00</span></p>
+</div>
+
+<footer>
+  <p>    🖥️ Nikhil Notse</p>
+</footer>
+<script>
+  const averageLifespan = 65; // in years
+  const currentAge = getAge('2001/04/23'); // fixed age
+  const daysInYear = 365;
+  const leapYears = Math.floor(averageLifespan / 4);
+  const totalLifespanDays = (averageLifespan * daysInYear) + leapYears;
+  const daysLived = (currentAge * daysInYear) + Math.floor(currentAge / 4);
+  let daysLeft = totalLifespanDays - daysLived;
+
+  // Calculate total sleeping hours
+  const sleepingHoursPerDay = 8;
+  const totalSleepHours = daysLeft * sleepingHoursPerDay; // Sleep hours in remaining days
+  const awakeHoursPerDay = 24 - sleepingHoursPerDay;
+  const awakeDays = Math.floor((daysLeft * awakeHoursPerDay) / 24); // Convert awake hours to days
+
+  // Update days left
+  document.getElementById('days-left').textContent = daysLeft;
+  document.getElementById('awake-days').textContent = awakeDays;
+
+  // Calcuating age function
+  function getAge(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
+
+  // Timer for hours, minutes, and seconds
+  function updateTime() {
+    const now = new Date();
+    const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const timeDifference = nextDay - now;
+
+    const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+    document.getElementById('time-left').textContent = 
+      `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+
+  // Decrease days left by 1 every 24 hours
+  setInterval(() => {
+    const now = new Date();
+    if (now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
+      daysLeft--;
+      const awakeHours = daysLeft * awakeHoursPerDay;
+      const updatedAwakeDays = Math.floor(awakeHours / 24);
+      document.getElementById('days-left').textContent = daysLeft;
+      document.getElementById('awake-days').textContent = updatedAwakeDays;
+    }
+  }, 1000);
+
+  // Update timer every second
+  setInterval(updateTime, 1000);
+</script>
+
+</body>
+</html>
