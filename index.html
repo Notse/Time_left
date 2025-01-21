@@ -51,7 +51,10 @@
   const daysInYear = 365;
   const leapYears = Math.floor(averageLifespan / 4);
   const totalLifespanDays = (averageLifespan * daysInYear) + leapYears;
-  const daysLived = (currentAge * daysInYear) + Math.floor(currentAge / 4);
+  const inputMilliseconds = new Date() - new Date('2001/04/23');
+  const days = millisecondsToDays(inputMilliseconds);
+  console.log(days)
+  const daysLived = (days) + Math.floor(currentAge / 4);
   let daysLeft = totalLifespanDays - daysLived;
 
   // Calculate total sleeping hours
@@ -73,6 +76,7 @@
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
         age--;
     }
+    console.log('age ', age )
     return age;
 }
 
@@ -101,6 +105,19 @@
       document.getElementById('awake-days').textContent = updatedAwakeDays;
     }
   }, 1000);
+
+  //Function to convert ms to days
+  function millisecondsToDays(milliseconds) {
+    const millisecondsInADay = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
+    return Math.floor(milliseconds / millisecondsInADay);
+}
+
+// Example usage:
+// const inputMilliseconds = 172800000; // 2 days in milliseconds
+
+// console.log(`${inputMilliseconds} milliseconds is equal to ${days} days.`);
+
+
 
   // Update timer every second
   setInterval(updateTime, 1000);
